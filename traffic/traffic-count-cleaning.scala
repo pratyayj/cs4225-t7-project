@@ -1,6 +1,8 @@
 val df = spark.read.option("header", true).csv("/traffic-data/march-2019.csv")
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.{SaveMode, SparkSession, Row}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
 
 object TrafficCountCleaning {
 
@@ -15,9 +17,21 @@ object TrafficCountCleaning {
 
     //spark read csv file
     val df = spark.read.option("header", true).csv("/traffic-data/march-2019.csv")
-    // df.show()
-    // df.printSchema()
     val df_noBin_filterThru = df.drop(df.col("bin_duration")).filter("movement == 'THRU'")
+    
+    // total speed to recalculate combined average speed
+    val df_wTotalSpeed = df_noBin_filterThru.withColumn("total_speed", (col("volume") * col("speed_average")))
+    
+    // cast volume to double
+    var df_wTotalSpeedCast = df_wTotalSpeed.withColumn("volume", col("volume").cast(DoubleType))
+    
+    // to get sum speed and volume for heavy and non-heavy vehicles
+    var grouped = df_wTotalSpeedCast.groupBy("read_date", "intersection_name", "direction")
+    var grouped_sum = grouped.sum("volume", "total_speed") // referenced as sum(volume) and sum(total_speed)
+    grouped_sum = grouped_sum.withColumnRenamed("sum(volume)","sum_volume").withColumnRenamed("sum(total_speed)","sum_speed")
+    
+    // average speed across both heavy and non-heavy vehicles
+    val overall_average_speed = grouped_sum.withColumn("overall_average_speed", col("sum_speed") / col("sum_volume"))
 
     //read with custom schema
     /*
@@ -27,7 +41,7 @@ object TrafficCountCleaning {
     */
 
     //Write dataframe back to single csv file
-    val df_cleaned = df_noBin_filterThru
+    val df_prepared = overall_average_speed
       .coalesce(1)
       .write
       .option("header", "true")
