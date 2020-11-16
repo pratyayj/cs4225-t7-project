@@ -13,7 +13,7 @@ object TrafficCountCleaning {
 
     spark.sparkContext.setLogLevel("ERROR")
 
-    //spark read csv file
+    //spark read csv file (note: needs to be repeated for all months)
     val df = spark.read.option("header", true).csv("/traffic-data/march-2019.csv")
     val df_noBin_filterThru = df.drop(df.col("bin_duration")).filter("movement == 'THRU'")
     
@@ -30,13 +30,6 @@ object TrafficCountCleaning {
     
     // average speed across both heavy and non-heavy vehicles
     val overall_average_speed = grouped_sum.withColumn("overall_average_speed", col("sum_speed") / col("sum_volume"))
-
-    //read with custom schema
-    /*
-    import org.apache.spark.sql.types._
-    val schema = new StructType()
-      .add("RecordNumber",IntegerType,true)
-    */
 
     //Write dataframe back to single csv file
     val df_prepared = overall_average_speed.coalesce(1)
