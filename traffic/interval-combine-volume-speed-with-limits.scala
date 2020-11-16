@@ -14,7 +14,7 @@ object IntervalCombineVolumeSpeedWithLimits {
     spark.sparkContext.setLogLevel("ERROR")
 
     //spark read csv file
-    val clean_traffic_data = spark.read.option("header", true).csv("/traffic-data/clean/march-2019-clean.csv")
+    val clean_traffic_data = spark.read.option("header", true).csv("/traffic-data/clean/*-clean.csv")
     
     // sort data by time stamp and device id
     var ordered_data = clean_traffic_data.orderBy("read_date","atd_device_id")
@@ -40,11 +40,11 @@ object IntervalCombineVolumeSpeedWithLimits {
     var overall_grouped_with_limits = overall_grouped_data.join(speedlimit_df, "atd_device_id")
 
     //Write dataframe back to single csv file
-    val intersectionCombined = overall_grouped_with_limits.coalesce(1)
+    val intersectionCombined = overall_grouped_with_limits
       .write
       .option("header", "true")
       .option("sep",",")
       .mode("overwrite")
-      .csv("/traffic-data/march-2019-ave-speed-with-limits.csv")
+      .csv("/traffic-data/combine-vol-ave-speed-with-limits")
   }
 }

@@ -14,8 +14,8 @@ object TSByIntersectionAndDay {
 
     spark.sparkContext.setLogLevel("ERROR")
 
-    val trafficFile = "test.csv"
-    val outfile = "march-2019-ts-by-intersection-day.csv"
+    val trafficFile = "/traffic-data/combine-vol-ave-speed-with-limits/*.csv"
+    val outfile = "/traffic-data/ts-by-intersection-day.csv"
 
     // read csv file into dataframe
     val traffic_data = spark.read.option("header", true).csv(trafficFile)
@@ -50,7 +50,6 @@ object TSByIntersectionAndDay {
 
     //Write dataframe back to single csv file
     val countDetectorMerged = traffic_scores
-      .coalesce(1)
       .write
       .option("header", "true")
       .option("sep",",")
