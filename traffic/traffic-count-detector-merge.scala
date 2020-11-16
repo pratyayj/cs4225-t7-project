@@ -13,7 +13,7 @@ object TrafficCountDetectorMerge {
 
     spark.sparkContext.setLogLevel("ERROR")
 
-    //spark read csv file
+    //spark read csv file (note: needs to be repeated for all months)
     val traffic_data = spark.read.option("header", true).csv("/traffic-data/clean/march-2019-clean.csv")
     val traffic_detectors = spark.read.option("header", true).csv("/traffic-data/traffic-detectors.csv")
     val td_droppedCols = traffic_detectors.drop("detector_type", "detector_direction", "detector_movement", "location_name",
@@ -21,13 +21,6 @@ object TrafficCountDetectorMerge {
 
     var resultDf = traffic_data.join(td_droppedCols, traffic_data("atd_device_id") === td_droppedCols("detector_id"))
     resultDf = resultDf.drop("detector_id", "sum_speed")
-
-    //read with custom schema
-    /*
-    import org.apache.spark.sql.types._
-    val schema = new StructType()
-      .add("RecordNumber",IntegerType,true)
-    */
 
     //Write dataframe back to single csv file
     val countDetectorMerged = resultDf
