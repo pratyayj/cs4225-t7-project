@@ -2,7 +2,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession, Row}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
-object IntervalCombineSpeedWithLimits {
+object IntervalCombineVolumeSpeedWithLimits {
 
   def main(args:Array[String]):Unit= {
 
