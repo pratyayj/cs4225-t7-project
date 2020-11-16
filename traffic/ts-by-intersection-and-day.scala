@@ -15,7 +15,7 @@ object TSByIntersectionAndDay {
     spark.sparkContext.setLogLevel("ERROR")
 
     val trafficFile = "/traffic-data/combine-vol-ave-speed-with-limits/*.csv"
-    val outfile = "/traffic-data/ts-by-intersection-day.csv"
+    val outfile = "/traffic-data/ts-by-intersection-day"
 
     // read csv file into dataframe
     val traffic_data = spark.read.option("header", true).csv(trafficFile)
