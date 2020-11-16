@@ -1,5 +1,3 @@
-val df = spark.read.option("header", true).csv("/traffic-data/march-2019.csv")
-
 import org.apache.spark.sql.{SaveMode, SparkSession, Row}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
