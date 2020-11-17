@@ -32,6 +32,7 @@ object SumVolByMonth {
         .groupBy("month")
         .sum("total_volume")
         .withColumnRenamed("sum(total_volume)","total_volume_for_month")
+        .orderBy("month")
 
     //Write dataframe back to single csv file
     val countDetectorMerged = total_vol_month
