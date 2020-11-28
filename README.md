@@ -4,7 +4,17 @@ This repository consists of all the files involved in data preparation/pre-proce
 
 ### Climate
 
-- 
+- **main.py** <br>
+
+- **climate.py** <br>
+Compute the cumulative sum and carry out the bootstrap approach to compute the confidence level for each ECV for each city.
+
+- **graph.py** <br>
+
+- **worldmap.py** <br>
+Given the confidence level and average change computed for each city, plot the bubble maps for each ECV.
+
+- **austin.py** <br>
 
 ### Traffic
 
