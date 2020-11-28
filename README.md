@@ -1,4 +1,4 @@
-# Big Data in Austin
+# Climate, Traffic and COVID-19
 
 This repository consists of all the files involved in data preparation/pre-processing, processing and analysis for the climate and traffic sections of our project.
 
