@@ -6,7 +6,7 @@ import pyspark.sql.functions as f
 spark = SparkSession.builder.appName("Simple Application").master("local[*]").getOrCreate()
 
 # params
-N = 100
+N = 1000
 
 # import data
 schema = StructType([
@@ -52,6 +52,7 @@ def cumulative_sum(input_data, mean):
 def bootstrap(input_data, mean, S_diff, N):
   length = len(input_data)
   num_bootstraps = 0 # number of bootstraps for which S^i_diff < S_diff
+  bootstrap_values = []
 
   for i in range(1, N):
     # randomise the data
@@ -63,8 +64,9 @@ def bootstrap(input_data, mean, S_diff, N):
     if bootstrap_value < S_diff:
       num_bootstraps += 1
       # print("plus one")
+    bootstrap_values.append(bootstrap_value)
 
-  return num_bootstraps
+  return num_bootstraps, bootstrap_values
 
 # process pm25
 pm25 = spark.read.format("csv").option("header", True).schema(schema).load("pm25_combined_csv.csv")
@@ -79,7 +81,7 @@ for n, city in enumerate(pm25_cities):
   data = subset.select(f.collect_list("avgMedian")).first()[0]
   mean = subset.agg({"avgMedian": "mean"}).collect()[0][0]
   S_diff = cumulative_sum(data, mean)
-  num_bootstraps = bootstrap(data, mean, S_diff, N)
+  num_bootstraps, bootstrap_values = bootstrap(data, mean, S_diff, N)
   CI = 100 * num_bootstraps / N
   new_row = spark.createDataFrame([(city, mean, S_diff, num_bootstraps, CI)], columns)
   pm25_results = pm25_results.union(new_row)
@@ -97,12 +99,12 @@ for n, city in enumerate(temp_cities):
   data = subset.select(f.collect_list("avgMedian")).first()[0]
   mean = subset.agg({"avgMedian": "mean"}).collect()[0][0]
   S_diff = cumulative_sum(data, mean)
-  num_bootstraps = bootstrap(data, mean, S_diff, N)
+  num_bootstraps, bootstrap_values = bootstrap(data, mean, S_diff, N)
   CI = 100 * num_bootstraps / N
   new_row = spark.createDataFrame([(city, mean, S_diff, num_bootstraps, CI)], columns)
   temp_results = temp_results.union(new_row)
   print("Done with city", n, city)
 
 # export data
-pm25_results.toPandas().to_csv("final_pm25_results.csv", header=True)
-temp_results.toPandas().to_csv("final_temp_results.csv", header=True)
+pm25_results.toPandas().to_csv("final_1000_pm25_results.csv", header=True)
+temp_results.toPandas().to_csv("final_1000_temp_results.csv", header=True)
