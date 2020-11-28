@@ -5,16 +5,20 @@ This repository consists of all the files involved in data preparation/pre-proce
 ### Climate
 
 - **main.py** <br>
+Filter only PM2.5 and temperature for all cities; compute the monthly average for both ECVs and combine the results across various datasets.
 
 - **climate.py** <br>
 Compute the cumulative sum and carry out the bootstrap approach to compute the confidence level for each ECV for each city.
 
+- **austin.py** <br>
+Filter for only Austin PM2.5 and temperature in the city of Austin.
+
 - **graph.py** <br>
+Filter (PM2.5 and temperature, Jan-Oct 2019 and Jan-Oct 2020) and process data to obtain month-on-month differences in cities all around the world.
 
 - **worldmap.py** <br>
 Given the confidence level and average change computed for each city, plot the bubble maps for each ECV.
 
-- **austin.py** <br>
 
 ### Traffic
 
