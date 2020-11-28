@@ -32,7 +32,7 @@ Enrich traffic count data with information about traffic detector at each inters
 Calculates the traffic score for each intersection for each day. This is done by agreggating speeds, volume, and capacity for all intervals in a day using our proposed Traffic Score formula
 
 - **ts-by-day.scala** <br>
-Calculates the traffic score for each day (across all intersections). This is done by using a weighted average of the traffic score for each intersections using the volume of vehicles for that intersection for that day. 
+Calculates the traffic score for each day (across all intersections). This is done by using a weighted average of the traffic score for each intersection using the volume of vehicles for that intersection for that particular day. 
 
 - **ts-by-month.scala** <br>
 Calculates the traffic score for each month. This is done using a simple aggregation of the daily traffic scores for the particular month. 
