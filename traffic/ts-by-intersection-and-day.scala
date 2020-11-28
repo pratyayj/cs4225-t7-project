@@ -15,7 +15,9 @@ object TSByIntersectionAndDay {
     spark.sparkContext.setLogLevel("ERROR")
 
     val trafficFile = "/traffic-data/combine-vol-ave-speed-with-limits/*.csv"
-    val outfile = "/traffic-data/ts-by-intersection-day"
+    val outfile = "/traffic-data/ts-by-intersection-day-with-vol"
+    // val trafficFile = "march-2019-ave-speed-with-limits.csv"
+    // val outfile = "output"
 
     // read csv file into dataframe
     val traffic_data = spark.read.option("header", true).csv(trafficFile)
@@ -48,7 +50,7 @@ object TSByIntersectionAndDay {
     var vol_per_intersection_day = casted_with_day
         .groupBy("atd_device_id", "day", "intersection_name")
         .sum("total_volume")
-        .withColumn("vol_per_xn_day", col("sum(total_volume)"))
+        .withColumnRenamed("sum(total_volume)", "vol_per_xn_day")
     
     // Join to keep volume
     var result = traffic_scores.join(vol_per_intersection_day, Seq("atd_device_id", "day", "intersection_name"))
