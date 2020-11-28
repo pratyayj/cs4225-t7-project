@@ -43,13 +43,23 @@ object TSByIntersectionAndDay {
         .sum("nom", "denom")
         .withColumn("traffic_score", col("sum(nom)") / col("sum(denom)"))
 
+    // Calculate total volume for ONE intersection for ONE day
+    // group by device id and day
+    var vol_per_intersection_day = casted_with_day
+        .groupBy("atd_device_id", "day", "intersection_name")
+        .sum("total_volume")
+        .withColumn("vol_per_xn_day", col("sum(total_volume)"))
+    
+    // Join to keep volume
+    var result = traffic_scores.join(vol_per_intersection_day, Seq("atd_device_id", "day", "intersection_name"))
+
     // Clean
-    traffic_scores = traffic_scores
+    result = result
         .drop("nom", "denom", "sum(nom)", "sum(denom)")
         .orderBy("atd_device_id", "day")
 
     //Write dataframe back to single csv file
-    val countDetectorMerged = traffic_scores
+    val countDetectorMerged = result
       .write
       .option("header", "true")
       .option("sep",",")
