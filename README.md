@@ -31,11 +31,20 @@ Enrich traffic count data with information about traffic detector at each inters
 - **ts-by-intersection-and-day.scala** <br>
 Calculates the traffic score for each intersection for each day. This is done by agreggating speeds, volume, and capacity for all intervals in a day using our proposed Traffic Score formula
 
+- **ts-by-day.scala** <br>
+Calculates the traffic score for each day (across all intersections). This is done by using a weighted average of the traffic score for each intersections using the volume of vehicles for that intersection for that day. 
+
+- **ts-by-month.scala** <br>
+Calculates the traffic score for each month. This is done using a simple aggregation of the daily traffic scores for the particular month. 
+
 - **sum-vol-by-month.scala** <br>
 Calculates total volume per month
 
 - **overpass_speed.py** <br>
 Script to obtain speed limits given intersection coordinates via the Overpass API
+
+- **interval-combine-volume-speed-with-limits.scala** <br>
+Calculation of overall speed for an intersection for one 15 minute interval using a weighted average of speeds using volume. Also join speed limit data.
 
 - **road-danger-score.scala** <br>
 Calculation of monthly Road Danger Score based on the assessed severity level of each incident type
